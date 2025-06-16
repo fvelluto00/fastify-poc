@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "load-test-docker": "k6 run src/test/k6-load/k6.loadtesting.js",
     "start": "tsc && node dist/main/app.js"
   },
   "keywords": [],
