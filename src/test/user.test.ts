@@ -9,12 +9,22 @@ const assertPassedValidationResponse = (userInformation: any, response) => {
 
     const expectedResponse = {
         message: 'User created successfully',
-        assignedId: expect.any(Number), // We expect an assigned ID, but we don't care about its exact value
+        assignedId: expect.any(Number),
         userInformation
     };
 
     expect(response.json()).toEqual(expectedResponse);
 };
+
+const assertFailedValidationResponse = (response) => {
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({
+        statusCode: 400,
+        error: 'Bad Request',
+        code: "FST_ERR_VALIDATION",
+        message: expect.any(String)
+    });
+}
 
 afterAll(async () => {
     await fastify.close();
@@ -66,7 +76,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when lastName is missing', async () => {
@@ -81,7 +91,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when age is missing', async () => {
@@ -96,7 +106,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when age is not a number', async () => {
@@ -112,7 +122,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when skills is not an array', async () => {
@@ -129,7 +139,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when skills contains non-string values', async () => {
@@ -146,7 +156,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when extra unexpected property is present', async () => {
@@ -163,7 +173,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when firstName is empty string', async () => {
@@ -179,7 +189,7 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 
     it('should fail validation when age is negative', async () => {
@@ -195,6 +205,6 @@ describe('User API', () => {
             payload: userInformation
         });
 
-        expect(response.statusCode).toBe(400);
+        assertFailedValidationResponse(response);
     });
 });
