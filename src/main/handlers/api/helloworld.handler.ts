@@ -2,7 +2,9 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { HelloWorldResponseDTOType } from "../../dtos/api/helloworld.dto";
 
 type HelloWorldDTOType = {
-    Reply: HelloWorldResponseDTOType
+    Reply: {
+        200: HelloWorldResponseDTOType
+    }
 }
 
 export const helloWorldHandler = (

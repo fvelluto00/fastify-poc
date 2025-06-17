@@ -3,7 +3,9 @@ import { UserRequestDTOType, UserResponseDTOType } from "../../dtos/api/user.dto
 
 type PostUserDTOType = {
     Body: UserRequestDTOType;
-    Reply: UserResponseDTOType;
+    Reply: {
+        200: UserResponseDTOType
+    };
 }
 
 export const postUserHandler = (

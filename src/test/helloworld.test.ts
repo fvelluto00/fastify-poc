@@ -4,6 +4,10 @@ import { FastifyInstance } from "fastify";
 
 const fastify: FastifyInstance = buildServer();
 
+beforeAll(async () => {
+    fastify.decorate('test__mockDatabase', true);
+});
+
 afterAll(async () => {
     await fastify.close();
 });

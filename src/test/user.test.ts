@@ -26,6 +26,10 @@ const assertFailedValidationResponse = (response) => {
     });
 }
 
+beforeAll(async () => {
+    fastify.decorate('test__mockDatabase', true);
+});
+
 afterAll(async () => {
     await fastify.close();
 });
