@@ -22,6 +22,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@fastify/jwt": "^9.1.0",
     "@fastify/mongodb": "^9.0.2",
     "@fastify/type-provider-typebox": "^5.1.0",
     "@sinclair/typebox": "^0.34.35",
