@@ -14,4 +14,4 @@ RUN npx tsc
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start-no-compile"]

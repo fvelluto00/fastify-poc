@@ -25,9 +25,6 @@ services:
         condition: service_healthy
       mongodb:
         condition: service_started
-    volumes:
-      - .:/app
-      - /app/node_modules
     networks:
       - fastify-poc-net
 
@@ -73,6 +70,18 @@ services:
       - KAFKA_BROKERS=kafka:9093
     depends_on:
       - kafka
+    networks:
+      - fastify-poc-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: fastify-poc-prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - fastify-poc
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - fastify-poc-net
 
