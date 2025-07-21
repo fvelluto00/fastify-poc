@@ -18,6 +18,7 @@ services:
     build: .
     ports:
       - "3000:3000"
+      - "9464:9464"
     environment:
       NODE_ENV: production
     depends_on:
@@ -84,6 +85,23 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - fastify-poc-net
+  
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    ports:
+      - '4318:4318'
+      - '8888:8888'
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    command: ["--config", "/etc/otel-collector-config.yaml"]
+  
+  jaeger:
+    image: jaegertracing/all-in-one:1.36
+    container_name: jaeger
+    ports:
+      - '16686:16686'
+      - '14268:14268'
 
 volumes:
   mongo-data:
