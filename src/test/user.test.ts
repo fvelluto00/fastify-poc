@@ -28,6 +28,7 @@ const assertFailedValidationResponse = (response) => {
 
 beforeAll(async () => {
     fastify.decorate('test__mockDatabase', true);
+    fastify.decorate('test__mockKafka', true);
 });
 
 afterAll(async () => {
