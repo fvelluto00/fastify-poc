@@ -8,6 +8,8 @@ const startServer = async() => {
     try {
         const address: string = await fastify.listen({ port: PORT, host: '0.0.0.0' });
         fastify.log.info(`Server listening at ${address}:${PORT}`);
+        await fastify.ready();
+        fastify.swagger();
     } catch(error) {
         fastify.log.error(error, "Error while starting server");
     }
