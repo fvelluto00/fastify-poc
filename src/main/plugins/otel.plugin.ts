@@ -1,14 +1,16 @@
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import {
-    PeriodicExportingMetricReader,
-} from '@opentelemetry/sdk-metrics';
 import { trace } from '@opentelemetry/api';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
-import FastifyOtel from '@fastify/otel';
+import { FastifyOtelInstrumentation } from '@fastify/otel';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+} from '@opentelemetry/semantic-conventions';
 
-let fastifyOtelInstrumentation: FastifyOtel | undefined;
+let fastifyOtelInstrumentation: FastifyOtelInstrumentation | undefined;
 
 const sdk = new NodeSDK({
     traceExporter: new OTLPTraceExporter({
@@ -18,12 +20,16 @@ const sdk = new NodeSDK({
         port: 9464,
         endpoint: '/metrics',
     }),
-    instrumentations: [getNodeAutoInstrumentations()],
+    resource: resourceFromAttributes({
+        [ATTR_SERVICE_NAME]: 'fastify-poc-app',
+        [ATTR_SERVICE_VERSION]: '1.0',
+    }),
+    instrumentations: [getNodeAutoInstrumentations()]
 });
 sdk.start();
 
-fastifyOtelInstrumentation = new FastifyOtel({
-    servername: 'fastify-poc',
+fastifyOtelInstrumentation = new FastifyOtelInstrumentation({
+    servername: 'fastify-poc-app'
 });
 fastifyOtelInstrumentation.setTracerProvider(trace.getTracerProvider());
 
