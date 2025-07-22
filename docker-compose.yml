@@ -87,21 +87,26 @@ services:
       - fastify-poc-net
   
   otel-collector:
-    image: otel/opentelemetry-collector:latest
-    container_name: otel-collector
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: fastify-poc-otel-collector
     ports:
       - '4318:4318'
       - '8888:8888'
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
     command: ["--config", "/etc/otel-collector-config.yaml"]
-  
-  jaeger:
-    image: jaegertracing/all-in-one:1.36
-    container_name: jaeger
+    networks:
+      - fastify-poc-net
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: fastify-poc-zipkin
     ports:
-      - '16686:16686'
-      - '14268:14268'
+      - "9411:9411"
+    depends_on:
+      - otel-collector
+    networks:
+      - fastify-poc-net
 
 volumes:
   mongo-data:
