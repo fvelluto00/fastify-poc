@@ -12,3 +12,12 @@ Then, run the following command:
 ```bash
 docker-compose up -d --build
 ```
+
+It can also be run in a local Kubernetes cluster using Skaffold.
+Make sure you have Skaffold and Helm installed and a local Kubernetes cluster running (Docker Desktop).
+
+Then, run the following command:
+
+```bash
+skaffold dev
+```

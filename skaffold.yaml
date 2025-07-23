@@ -1,0 +1,76 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: fastify-poc
+build:
+  artifacts:
+    - image: fastify-app
+      context: .
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - k8s/fastify-app/*.yaml
+    - k8s/mongodb/*.yaml
+    - k8s/zipkin/*.yaml
+    - k8s/redpanda-console/*.yaml
+    - k8s/otel/*.yaml
+deploy:
+  helm:
+    releases:
+      - name: kafka
+        repo: https://charts.bitnami.com/bitnami
+        remoteChart: kafka
+        version: 26.3.2
+        setValues:
+          replicaCount: 1
+          zookeeper.replicaCount: 1
+          auth:
+            clientProtocol: plaintext
+            interBrokerProtocol: plaintext
+            sasl:
+              enabled: false
+          listeners:
+            client:
+              name: CLIENT
+              containerPort: 9092
+              protocol: PLAINTEXT
+              sslClientAuth: ""
+          
+            interbroker:
+              name: INTERNAL
+              containerPort: 9094
+              protocol: PLAINTEXT
+              sslClientAuth: ""
+          
+            external:
+              name: EXTERNAL
+              containerPort: 9095
+              protocol: PLAINTEXT
+              sslClientAuth: ""  
+
+            controller:
+              name: CONTROLLER
+              containerPort: 9093
+              protocol: PLAINTEXT
+              sslClientAuth: ""
+
+      - name: monitoring
+        repo: https://prometheus-community.github.io/helm-charts
+        remoteChart: kube-prometheus-stack
+        version: 55.6.0
+        setValues:
+          grafana.enabled: false
+portForward:
+  - resourceType: service
+    resourceName: fastify-service
+    port: 3000
+    localPort: 3000
+  - resourceType: service
+    resourceName: zipkin
+    port: 9411
+    localPort: 9411
+  - resourceType: service
+    resourceName: redpanda-console
+    port: 8080
+    localPort: 8081

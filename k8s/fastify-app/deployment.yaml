@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastify-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastify
+  template:
+    metadata:
+      labels:
+        app: fastify
+    spec:
+      containers:
+        - name: fastify
+          image: fastify-app:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+            - containerPort: 9464
